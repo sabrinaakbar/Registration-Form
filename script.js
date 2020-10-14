@@ -18,39 +18,63 @@ function showSuccess(input) {
 }
 
 //Check email is valid
-function isValidEmail(email) {
+function chcekEmail(input.value) {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
+  if (re.test(input)){
+  showSuccess(input);
+  }
+  else{
+    showError(input,"Email is not valid");
+  }
+}
+//check reuired field
+
+function checkRequired(inputArr) {
+  inputArr.forEach(function (input) {
+    if (input.value.trim() === " ") {
+      showError(input, `${input.id} is required`);
+    } else {
+      showSuccess(input);
+    }
+  });
 }
 
-//Event L:istener
+//Get fieldname
+
+function getFieldName(input) {
+  return input.id.charAt(0).toUpperCase() + input.id.slice(1);
+}
+
+//Check input Length
+function checkLength(input,min,max){
+  if (input.value.length<min) {
+    showError (input,`${getFieldName(input)} must be at least ${min} characters`);
+
+  }
+  else if (input.value.length>max){
+    showError (input,`${getFieldName(input)} must be less than ${max} characters`);
+  }
+  else {
+    showSuccess(input);
+    }
+}
+//Check Passowrd match
+function chcekPasswordsMatch(input1,input2){
+  if(input1.value!==input2.value){
+    showError(input2,"Password doesn't match");
+  }
+
+}
+
+
+//Event Listeners
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  if (username.value === "") {
-    showError(username, "username is required");
-  } else {
-    showSucess(username);
-  }
-
-  if (email.value === "") {
-    showError(email, "Email is required");
-  } else if (!isValidEmail(email.value)) {
-    showError(email, "email is not valid");
-  } else {
-    showSucess(email);
-  }
-
-  if (password.value === "") {
-    showError(password, "Password is required");
-  } else {
-    showSucess(password);
-  }
-
-  if (password2.value === "") {
-    showError(password2, "Password is required again");
-  } else {
-    showSucess(password);
-  }
+  checkRequired([username, email, password, password2]);
+  checkLength(username,3,15);
+  checkLength(password,6,25);
+  chcekEmail(email);
+  chcekPasswordsMatch(password,password2);
 });
